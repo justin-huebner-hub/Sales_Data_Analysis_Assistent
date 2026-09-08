@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sales Data Analysis Assistant for SMEs</title>
+  <meta name="description" content="University proof-of-concept web app for SME sales data analysis." />
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-mark">SA</div>
+        <div>
+          <h1>Sales Data Analysis Assistant for SMEs</h1>
+          <p>Focused proof of concept · deterministic metrics · AI-style explanations</p>
+        </div>
+      </div>
+
+      <div class="top-actions">
+        <div class="badge"><span class="dot"></span> SME Sales Analytics</div>
+        <div class="history-wrap">
+          <button class="icon-button" id="historyBtn">History</button>
+          <div class="history-dropdown" id="historyDropdown">
+            <h4>Question History</h4>
+            <div id="historyList"><p class="history-empty">No questions asked yet.</p></div>
+          </div>
+        </div>
+        <button class="icon-button" id="themeBtn">Dark Mode</button>
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="hero-card card">
+        <p class="eyebrow">Not a general chatbot · focused sales analysis</p>
+        <h2>Upload sales data. Ask a question. Get a <span class="gradient">business-ready answer.</span></h2>
+        <p class="hero-copy">
+          This proof of concept helps SMEs understand revenue, products, categories, trends and unusual drops.
+          All calculations are deterministic. The explanation layer only explains computed facts and never invents numbers.
+        </p>
+        <div class="hero-actions">
+          <a href="#workflow" class="button button-primary">Start analysis</a>
+          <button class="button button-green" id="exportReportBtn" disabled>Export Excel Report</button>
+        </div>
+      </div>
+
+      <aside class="how-card card">
+        <h2 class="section-title">How it works</h2>
+        <p class="section-subtitle">The live demo follows one simple flow.</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div><strong>Upload file</strong><span>CSV or Excel sales data.</span></div>
+          </div>
+          <div class="step">
+            <div class="step-number">2</div>
+            <div><strong>Ask a question</strong><span>Use suggested questions or type your own.</span></div>
+          </div>
+          <div class="step">
+            <div class="step-number">3</div>
+            <div><strong>Preview &amp; validate</strong><span>Column mapping and data quality are checked automatically.</span></div>
+          </div>
+          <div class="step">
+            <div class="step-number">4</div>
+            <div><strong>Receive insight</strong><span>Metrics, charts, provenance and recommendations.</span></div>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <main class="workflow" id="workflow">
+      <section class="stack">
+        <div class="panel card">
+          <div class="panel-header">
+            <div>
+              <h2 class="section-title">1. Upload sales data</h2>
+              <p class="section-subtitle">Supports .csv, .xlsx and .xls. Revenue can be read or calculated.</p>
+            </div>
+            <button class="new-file-btn" id="newFileBtn">New File</button>
+          </div>
+
+          <label class="upload-box" id="uploadBox" for="fileInput">
+            <div class="upload-icon">↑</div>
+            <strong>Drop file here or click to upload</strong>
+            <span>Expected fields: date, product, category, quantity, unit price, revenue, region</span>
+          </label>
+          <input id="fileInput" type="file" accept=".csv,.xlsx,.xls" />
+          <div id="uploadStatus" class="status"></div>
+        </div>
+
+        <div class="panel card">
+          <div class="panel-header">
+            <div>
+              <h2 class="section-title">2. Ask a business question</h2>
+              <p class="section-subtitle">The question is routed to deterministic analysis logic.</p>
+            </div>
+          </div>
+
+          <div class="question-box">
+            <div class="question-row">
+              <input class="question-input" id="questionInput" placeholder="Example: Which products generated the highest revenue?" />
+              <button class="button button-primary" id="analyzeBtn" disabled>Analyze</button>
+            </div>
+
+            <div class="filters">
+              <select id="regionFilter" class="select" disabled>
+                <option value="">All regions</option>
+              </select>
+              <select id="granularityFilter" class="select" disabled>
+                <option value="month">Monthly trend</option>
+                <option value="week">Weekly trend</option>
+                <option value="day">Daily trend</option>
+              </select>
+            </div>
+
+            <div class="suggestions">
+              <button class="suggestion">Which products generated the highest revenue?</button>
+              <button class="suggestion">Which category performs best?</button>
+              <button class="suggestion">When was revenue at its peak?</button>
+              <button class="suggestion">Are there any unusual drops in sales?</button>
+              <button class="suggestion">Which products should the business review?</button>
+              <button class="suggestion">What are the most important trends in the data?</button>
+            </div>
+          </div>
+
+          <div id="analysisStatus" class="status"></div>
+        </div>
+
+        <div class="panel card">
+          <div class="panel-header">
+            <div>
+              <h2 class="section-title">Column mapping</h2>
+              <p class="section-subtitle">Automatic detection with confidence scoring.</p>
+            </div>
+          </div>
+
+          <div id="mappingEmpty" class="empty-state">
+            <div>
+              <div class="empty-icon">↔</div>
+              <h3>No columns detected yet</h3>
+              <p>Upload data to see how business fields are mapped to the file columns.</p>
+            </div>
+          </div>
+          <div id="mappingOutput" style="display:none;"></div>
+        </div>
+
+        <div class="panel card">
+          <div class="panel-header">
+            <div>
+              <h2 class="section-title">Data Quality</h2>
+              <p class="section-subtitle">The app checks whether the analysis is trustworthy.</p>
+            </div>
+          </div>
+
+          <div id="qualityEmpty" class="empty-state">
+            <div>
+              <div class="empty-icon">✓</div>
+              <h3>No quality report yet</h3>
+              <p>After upload, this card shows usable rows, skipped rows, invalid values and date range.</p>
+            </div>
+          </div>
+          <div id="qualityOutput" style="display:none;"></div>
+        </div>
+      </section>
+
+
+      <section class="stack">
+        <div class="panel card">
+          <div class="panel-header">
+            <div>
+              <h2 class="section-title">2. Dataset preview</h2>
+              <p class="section-subtitle" id="previewSubtitle">Upload a file to preview the first rows.</p>
+            </div>
+            <div id="loading" class="loading"><span class="spinner"></span> Processing</div>
+          </div>
+
+          <div id="previewEmpty" class="empty-state">
+            <div>
+              <div class="empty-icon">▦</div>
+              <h3>Waiting for sales data</h3>
+              <p>Upload a CSV or Excel file. The app will parse, validate and prepare the sales analysis.</p>
+            </div>
+          </div>
+          <div id="previewOutput" style="display:none;"></div>
+        </div>
+
+        <div class="panel card">
+          <div class="panel-header">
+            <div>
+              <h2 class="section-title">4. Business Insight</h2>
+              <p class="section-subtitle">Structured answer, deterministic metrics, charts and recommendations.</p>
+            </div>
+          </div>
+
+          <div id="resultsEmpty" class="empty-state">
+            <div>
+              <div class="empty-icon">★</div>
+              <h3>No insight yet</h3>
+              <p>After upload, ask a question or run the demo story.</p>
+            </div>
+          </div>
+          <div id="resultsOutput" class="result-grid" style="display:none;"></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      Sales Data Analysis Assistant for SMEs · University Proof of Concept · Code-calculated metrics only
+    </footer>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

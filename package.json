@@ -1,0 +1,27 @@
+{
+  "name": "sales-data-analysis-assistant",
+  "version": "1.0.0",
+  "description": "University Proof of Concept — Deterministic sales data analysis with AI-style explanations for SMEs.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Sales Data Analysis Assistant Contributors",
+  "keywords": [
+    "sales-analysis",
+    "data-analysis",
+    "sme",
+    "business-intelligence",
+    "proof-of-concept",
+    "vanilla-javascript",
+    "chart-js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YOUR_USERNAME/sales-data-analysis-assistant.git"
+  },
+  "scripts": {
+    "test": "node --test 'tests/**/*.test.js'"
+  },
+  "devDependencies": {
+    "jsdom": "^24.1.0"
+  }
+}
