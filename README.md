@@ -7,10 +7,6 @@
 A university proof-of-concept web application that helps small and medium-sized enterprises (SMEs) understand their
 sales data through structured, code-calculated insights — no black-box AI, no hallucinated numbers.
 
-[![Node.js](https://img.shields.io/badge/Node.js-Test_Runner-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Vanilla JS](https://img.shields.io/badge/Vanilla-JavaScript-F7DF1E?logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![Status](https://img.shields.io/badge/Status-University_PoC-purple)]()
-
 </div>
 
 ---
@@ -33,7 +29,7 @@ sales data through structured, code-calculated insights — no black-box AI, no 
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 The app follows a clean modular architecture with clear separation of concerns:
 
