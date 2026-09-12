@@ -9,8 +9,6 @@ sales data through structured, code-calculated insights — no black-box AI, no 
 
 </div>
 
----
-
 ## Features
 
 | Feature                        | Description                                                                   |
@@ -27,65 +25,9 @@ sales data through structured, code-calculated insights — no black-box AI, no 
 | **Dark Mode**                  | Toggle between light and dark themes                                          |
 | **Question History**           | Track and revisit previously asked questions                                  |
 
----
-
-## Architecture
-
-The app follows a clean modular architecture with clear separation of concerns:
-
-```mermaid
-graph TB
-    subgraph Frontend["index.html"]
-        UI["User Interface"]
-    end
-
-    subgraph Entry["main.js"]
-        Init["App Initialization"]
-    end
-
-    subgraph Models
-        State["AppState"]
-    end
-
-    subgraph Analysis["Analysis Engine"]
-        Router["QuestionRouter"]
-        Analyzer["SalesAnalyzer"]
-        Mapper["ColumnMapper"]
-        Normalizer["DataNormalizer"]
-        Verifier["ClaimVerifier"]
-    end
-
-    subgraph UI_Layer["UI Layer"]
-        Renderer["Renderer"]
-        Charts["ChartRenderer"]
-        Events["EventHandler"]
-    end
-
-    subgraph Utils
-        Parser["Parser"]
-        Formatter["Formatter"]
-        Helpers["Helpers"]
-    end
-
-    UI --> Init
-    Init --> State
-    Init --> Events
-    Events --> Router
-    Router --> Analyzer
-    Events --> Mapper
-    Events --> Normalizer
-    Analyzer --> Verifier
-    Events --> Renderer
-    Events --> Charts
-    Renderer --> Formatter
-    Parser --> Events
-    Helpers --> Analyzer
-```
 
 **Key design principle:** The explanation layer can only describe facts that were computed by the analysis engine. It
 never generates or invents numbers — ensuring trustworthy business insights.
-
----
 
 ## Quick Start
 
@@ -113,8 +55,6 @@ python3 -m http.server
 
 Then open [http://localhost:3000](http://localhost:3000) (or the port shown in your terminal).
 
----
-
 ## Testing
 
 The project uses the built-in [Node.js Test Runner](https://nodejs.org/api/test.html) — no extra test framework needed.
@@ -130,8 +70,6 @@ npm test
 **IntelliJ tip:** Open any `.test.js` file and click the green ▶ play button next to individual tests to run them
 directly in the IDE.
 
----
-
 ## Tech Stack
 
 | Layer            | Technology                                                                                        |
@@ -141,8 +79,6 @@ directly in the IDE.
 | **File Parsing** | [Papa Parse 5.4](https://www.papaparse.com/) (CSV) · [SheetJS 0.18](https://sheetjs.com/) (Excel) |
 | **Testing**      | Node.js Test Runner · [jsdom 24](https://github.com/jsdom/jsdom)                                  |
 | **Build Tools**  | None — zero build step, runs directly in the browser                                              |
-
----
 
 ## Supported Question Types
 
@@ -154,5 +90,3 @@ The analysis engine recognizes several business question categories:
 - **Anomalies** — *"Are there any unusual drops in sales?"*
 - **Products to Review** — *"Which products should the business review?"*
 - **General Trends** — *"What are the most important trends in the data?"*
-
----
